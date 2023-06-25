@@ -1,4 +1,20 @@
-import { Controller } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  Post,
+  Body,
+  Put,
+  Delete,
+} from '@nestjs/common';
 
 @Controller('brands')
-export class BrandsController {}
+export class BrandsController {
+  @Get(':id')
+  getBrand(@Param(':id') id: number) {
+    return {
+      brand: `Brand ${id}`,
+    };
+  }
+}
