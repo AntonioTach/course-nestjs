@@ -13,15 +13,17 @@ import {
 } from '@nestjs/common';
 
 import { Response } from 'express';
+import { ProductsService } from '../services/products.service';
+import { ParseIntPipe } from 'src/common/pipes/parse-int/parse-int.pipe';
 
 @Controller('products')
 export class ProductsController {
+  constructor(private productsService: ProductsService) { }
+
   @Get(':id')
   @HttpCode(HttpStatus.ACCEPTED)
-  getProduct(@Res() response: Response, @Param('id') id: number) {
-    response.status(202).send({
-      message: `Product ${id}`,
-    });
+  getProduct(@Param('id', ParseIntPipe) id: string) {
+    return this.productsService.findOne(+id);
   }
 
   @Get()
@@ -30,35 +32,21 @@ export class ProductsController {
     @Query('offset') offset = 0,
     @Query('brand') brand: string,
   ) {
-    return {
-      limit,
-      offset,
-      brand,
-    };
+    return this.productsService.findAll();
   }
 
   @Post()
   create(@Body() payload: any) {
-    return {
-      message: 'Product created',
-      payload,
-    };
+    return this.productsService.create(payload);
   }
 
   @Put(':id')
   update(@Param('id') id: number, @Body() payload: any) {
-    return {
-      message: 'Product updated',
-      id,
-      payload,
-    };
+    return this.productsService.update(+id, payload);
   }
 
   @Delete(':id')
   delete(@Param('id') id: number) {
-    return {
-      message: 'Product deleted',
-      id,
-    };
+    return this.productsService.delete(+id);
   }
 }
